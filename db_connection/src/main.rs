@@ -11,6 +11,8 @@ use mount::Mount;
 use postgres::Connection;
 use rand::{thread_rng, Rng};
 use router::Router;
+use std::fs::File;
+use std::io::prelude::*;
 
 struct Token {
   id: i32,
@@ -32,7 +34,7 @@ fn main() {
                 )"
               , &[]).unwrap();
 
-  for i in (0..100000) {
+  for i in 0..100000 {
     let token = Token {
         id: i
       , value: thread_rng().gen_ascii_chars().take(10).collect()
@@ -42,13 +44,17 @@ fn main() {
                 , &[&token.id, &token.value]).unwrap();
   }
 
+  {
+    let mut file = File::create("rust.urls").unwrap();
 
-  for row in &conn.query("SELECT id, value FROM tokens", &[]).unwrap() {
-    let token = Token {
-      id: row.get(0),
-      value: row.get(1),
-    };
-    println!("{}", token.value);
+    for row in &conn.query("SELECT id, value FROM tokens", &[]).unwrap() {
+      let token = Token {
+        id: row.get(0),
+        value: row.get(1),
+      };
+      file.write_all(&token.value.into_bytes()).unwrap();
+      file.write_all(b"\n").unwrap();
+    }
   }
 
   // Start webserver
@@ -71,12 +77,12 @@ fn token_handler(req: &mut Request) -> IronResult<Response> {
 
   let token = router.find("token").unwrap();
 
+  let mut s = "Not found".to_string();
   for row in &conn.query("SELECT id FROM tokens WHERE value = $1", &[&token]).unwrap() {
-    let id: i32 = row.get(0);
-    println!("{}", id);
+    s = token.to_string();
   }
 
   Ok(
-    Response::with((status::Ok, token))
+    Response::with((status::Ok, s))
   )
 }
