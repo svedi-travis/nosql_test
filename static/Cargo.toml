@@ -1,0 +1,10 @@
+[package]
+name = "skm_baseline"
+version = "0.1.0"
+authors = ["rust"]
+
+[dependencies]
+iron = "*"
+mount = "*"
+postgres = "*"
+router = "*"
