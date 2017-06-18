@@ -102,7 +102,7 @@ fn token_handler(req: &mut Request) -> IronResult<Response> {
   }
 
   let count: u64 = conn.incr("count", 1u64).unwrap();
-  if count >= 150000 {
+  if count >= 15000000000 {
     let _: () = conn.incr("count", -1i64).unwrap();
     return Ok(Response::with((status::Ok, "Limit exceeded! Sorry!")));
   }
