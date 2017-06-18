@@ -27,22 +27,22 @@ fn main() {
                                 , postgres::TlsMode::None
                                 ).unwrap();
 
-  conn.execute("DROP TABLE IF EXISTS tokens", &[]).unwrap();
-  conn.execute( "CREATE TABLE tokens (
-                   id		SERIAL PRIMARY KEY,
-                   value	VARCHAR NOT NULL
-                )"
-              , &[]).unwrap();
-
-  for i in 0..100000 {
-    let token = Token {
-        id: i
-      , value: thread_rng().gen_ascii_chars().take(10).collect()
-    };
-
-    conn.execute( "INSERT INTO tokens (id, value) VALUES ($1, $2)"
-                , &[&token.id, &token.value]).unwrap();
-  }
+//  conn.execute("DROP TABLE IF EXISTS tokens", &[]).unwrap();
+//  conn.execute( "CREATE TABLE tokens (
+//                   id		SERIAL PRIMARY KEY,
+//                   value	VARCHAR NOT NULL
+//                )"
+//              , &[]).unwrap();
+//
+//  for i in 0..100000 {
+//    let token = Token {
+//        id: i
+//      , value: thread_rng().gen_ascii_chars().take(10).collect()
+//    };
+//
+//    conn.execute( "INSERT INTO tokens (id, value) VALUES ($1, $2)"
+//                , &[&token.id, &token.value]).unwrap();
+//  }
 
   {
     let mut file = File::create("rust.urls").unwrap();
@@ -52,6 +52,7 @@ fn main() {
         id: row.get(0),
         value: row.get(1),
       };
+      file.write_all(b"http://52.166.242.54/").unwrap();
       file.write_all(&token.value.into_bytes()).unwrap();
       file.write_all(b"\n").unwrap();
     }

@@ -26,20 +26,24 @@ fn main() {
 fn handler_1(req: &mut Request) -> IronResult<Response> {
   let router = req.extensions.get::<Router>().unwrap();
 
-  let token = router.find("value").unwrap();
+  let mut response = String::new();
+  response += "Hello, ";
+  response += router.find("value").unwrap();
 
   Ok(
-    Response::with((status::Ok, "HELLO!!!!"))
+    Response::with((status::Ok, response))
   )
 }
 
 fn handler_2(req: &mut Request) -> IronResult<Response> {
   let router = req.extensions.get::<Router>().unwrap();
 
-  let token = router.find("value").unwrap();
+  let mut response = String::new();
+  response += router.find("value").unwrap();
+  response += ", that is a fine name indeed, Sir.";
 
   Ok(
-    Response::with((status::Ok, "HELLO!!!!"))
+    Response::with((status::Ok, response))
   )
 }
 
@@ -49,7 +53,7 @@ fn handler_3(req: &mut Request) -> IronResult<Response> {
   let token = router.find("value").unwrap();
 
   Ok(
-    Response::with((status::Ok, "HELLO!!!!"))
+    Response::with((status::Ok, "qwer!!!!"))
   )
 }
 
@@ -59,6 +63,6 @@ fn handler_4(req: &mut Request) -> IronResult<Response> {
   let token = router.find("value").unwrap();
 
   Ok(
-    Response::with((status::Ok, "HELLO!!!!"))
+    Response::with((status::Ok, "EPIC!!!!"))
   )
 }
