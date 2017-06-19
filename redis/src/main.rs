@@ -37,7 +37,7 @@ type RedisPooledConnection = PooledConnection<RedisConnectionManager>;
 
 fn main() {
   // Set up database
-  let manager = r2d2_redis::RedisConnectionManager::new("redis://localhost").unwrap();
+  let manager = r2d2_redis::RedisConnectionManager::new("redis://10.0.0.4").unwrap();
   let config = r2d2::Config::builder().pool_size(32).build();
   let pool = r2d2::Pool::new(config, manager).unwrap();
   let conn = pool.get().unwrap();
@@ -107,7 +107,8 @@ fn token_handler(req: &mut Request) -> IronResult<Response> {
     return Ok(Response::with((status::Ok, "Limit exceeded! Sorry!")));
   }
 
-  let _: () = conn.sadd("machine_codes", token).unwrap();
+  let rows: u64 = conn.sadd("machine_codes", token).unwrap();
+  if rows == 0 { let _: () = conn.incr("count", -1i64).unwrap(); }
   Ok(Response::with((status::Ok, "New cusomters are always welcome!")))
 }
 
