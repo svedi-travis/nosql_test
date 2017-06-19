@@ -50,14 +50,14 @@ fn main() {
                    ( POSTGRES_URI
                    , r2d2_postgres::TlsMode::None
                    ).unwrap();
-  let pconfig = r2d2::Config::builder().pool_size(95).build();
+  let pconfig = r2d2::Config::builder().pool_size(32).build();
   let ppool = r2d2::Pool::new(pconfig, pmanager).unwrap();
   let pconn = ppool.get().unwrap();
 
   println!("Postgres connected!");
 
   let rmanager = r2d2_redis::RedisConnectionManager::new(REDIS_URI).unwrap();
-  let rconfig = r2d2::Config::builder().pool_size(95).build();
+  let rconfig = r2d2::Config::builder().pool_size(32).build();
   let rpool = r2d2::Pool::new(rconfig, rmanager).unwrap();
   let rconn = rpool.get().unwrap();
 
